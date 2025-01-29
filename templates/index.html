@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summary Generator</title>
+    <link rel="stylesheet" href="/static/style.css"/>
+    <script>
+        // Function to submit form when the Enter key is pressed
+        function submitOnEnter(event) {
+            if (event.key === "Enter" || event.keyCode === 13) {
+                event.preventDefault();  // Prevents new line in the textarea
+                document.getElementById("text-form").submit();  // Submit the form
+            }
+        }
+
+        // Function to update word/character count
+        function updateCount() {
+            const textarea = document.querySelector('textarea');
+            const text = textarea.value;
+            const charCount = text.length;
+            const wordCount = text.trim().split(/\s+/).filter(Boolean).length;
+
+            document.getElementById('char-count').textContent = `Characters: ${charCount}`;
+            document.getElementById('word-count').textContent = `Words: ${wordCount}`;
+        }
+
+        // Function to clear the textarea
+        function clearText() {
+            const textarea = document.querySelector('textarea');
+            textarea.value = '';
+            updateCount(); // Update the word/character count to 0
+        }
+
+        // Function to validate form submission
+        function validateForm(event) {
+            const textarea = document.querySelector('textarea');
+            if (textarea.value.trim() === '') {
+                alert('Please enter some text before generating a summary.');
+                event.preventDefault(); // Prevent form submission
+            }
+        }
+
+        // Attach event listeners when the DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            const textarea = document.querySelector('textarea');
+            const form = document.getElementById('text-form');
+
+            textarea.addEventListener('input', updateCount); // Update count on input
+            form.addEventListener('submit', validateForm); // Validate form on submit
+        });
+    </script>
+</head>
+<body>
+    <div class="background">
+        <div class="container"> 
+            <h1>Summary Generator</h1>
+            <form id="text-form" action="/analyze" method="POST">
+                <textarea name="rawtext" rows="10" placeholder="Paste your text here..." onkeydown="submitOnEnter(event)"></textarea>
+                <div id="count-display" style="margin-top: 10px; color: #00f2f7;">
+                    <span id="char-count">Characters: 0</span> | 
+                    <span id="word-count">Words: 0</span>
+                </div>
+                <button type="submit">Generate Summary</button>
+                <button type="button" onclick="clearText()" style="margin-top: 10px; background-color: #ff4d4d; border-color: #ff4d4d;">Clear Text</button>
+            </form>            
+        </div>
+        <footer>
+            <p>&copy; 2024 Summary Generator | All Rights Reserved</p>
+        </footer>
+    </div>
+</body>
+</html>
